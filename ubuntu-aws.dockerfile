@@ -7,7 +7,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN sed -i '/^deb-src /s/^/#/' /etc/apt/sources.list && \
     apt-get update && apt-get -yq upgrade && \
-    apt-get install --no-install-recommends -yq zip unzip openssh-client wget curl python3 python3-pip python3-setuptools docker.io ca-certificates git && \
+    apt-get install --no-install-recommends -yq \
+        zip unzip openssh-client wget curl ca-certificates git \
+        python3 python3-pip python3-setuptools python3-wheel \
+        docker.io && \
     curl -L https://storage.googleapis.com/kubernetes-helm/helm-v$HELM_VERSION-linux-amd64.tar.gz | tar -xvz --strip=1 -C /usr/bin && \
-    pip3 install wheel awscli --upgrade && \
+    pip3 install awscli --upgrade && \
     apt-get autoremove -yq && apt-get clean -yq && rm -rf /var/lib/apt/lists/*
