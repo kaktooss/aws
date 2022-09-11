@@ -3,7 +3,7 @@ jobs:
   checkout:
     resource_class: small  # 1 vCPU 2GB RAM
     docker:
-      - image: cimg/base:2021.04
+      - image: cimg/base:2022.09
     steps:
       - checkout
       - persist_to_workspace:
@@ -41,9 +41,9 @@ workflows:
   build-image:
     jobs:
       - checkout
-      - build:
-          context: dockerhub
-          filters:
-            branches:
-              only:
-                - master
+#      - build:
+#          context: dockerhub
+#          filters:
+#            branches:
+#              only:
+#                - master
