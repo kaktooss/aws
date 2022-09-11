@@ -1,7 +1,7 @@
 version: 2
 jobs:
   checkout:
-    resource_class: small  # 1 vCPU 2GB RAM
+    resource_class: dct-local/dct-local
     docker:
       - image: cimg/base:2022.09
     steps:
