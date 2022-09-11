@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: docker:stable
+      - image: quay.io/buildah/stable
     resource_class: dct-local/dct-local
     steps:
       - checkout
