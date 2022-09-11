@@ -1,11 +1,20 @@
 version: 2
 jobs:
+  checkout:
+    resource_class: small  # 1 vCPU 2GB RAM
+    docker:
+      - image: cimg/base:2021.04
+    steps:
+      - checkout
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   build:
     docker:
       - image: quay.io/buildah/stable
     resource_class: dct-local/dct-local
     steps:
-      - checkout
       - run:
           name: Build Docker Image
           command: |
@@ -28,8 +37,12 @@ workflows:
 
   build-image:
     jobs:
+      - checkout
       - build:
           context: dockerhub
+          pre-steps:
+            - attach_workspace:
+              at: .
           filters:
             branches:
               only:
