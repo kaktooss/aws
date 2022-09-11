@@ -41,9 +41,9 @@ workflows:
   build-image:
     jobs:
       - checkout
-#      - build:
-#          context: dockerhub
-#          filters:
-#            branches:
-#              only:
-#                - master
+      - build:
+          context: dockerhub
+          filters:
+            branches:
+              only:
+                - master
