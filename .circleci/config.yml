@@ -3,6 +3,7 @@ jobs:
   build:
     docker:
       - image: docker:stable
+    resource_class: dct-local/dct-local
     steps:
       - checkout
       - setup_remote_docker:
