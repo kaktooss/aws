@@ -15,6 +15,9 @@ jobs:
       - image: quay.io/buildah/stable
     resource_class: dct-local/dct-local
     steps:
+      - attach_workspace:
+          name: code
+          at: .
       - run:
           name: Build Docker Image
           command: |
@@ -40,9 +43,6 @@ workflows:
       - checkout
       - build:
           context: dockerhub
-          pre-steps:
-            - attach_workspace:
-              at: .
           filters:
             branches:
               only:
