@@ -16,24 +16,16 @@ jobs:
     resource_class: dct-local/dct-local
     steps:
       - attach_workspace:
-          name: code
           at: .
       - run:
           name: Build Docker Image
           command: |
             export VERSION=`date +%Y%m%d-%H%M%S -u`
-
-            echo $PASS | docker login -u $USER --password-stdin
-
-            docker build  -f ubuntu-aws.dockerfile       -t kaktooss/aws       -t kaktooss/aws:${VERSION} .
-            docker build  -f ubuntu-aws-java.dockerfile  -t kaktooss/aws-java  -t kaktooss/aws-java:${VERSION} .
-
-            docker push kaktooss/aws:${VERSION}
-            docker push kaktooss/aws:latest
-
-            docker push kaktooss/aws-java:${VERSION}
-            docker push kaktooss/aws-java:latest
-
+            
+            echo $PASS | buildah login -u $USER --password-stdin
+            
+            buildah bud -t kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
+            buildah push kaktooss/aws:${VERSION}
 
 workflows:
   version: 2
@@ -42,6 +34,8 @@ workflows:
     jobs:
       - checkout
       - build:
+          requires:
+            - checkout
           context: dockerhub
           filters:
             branches:
