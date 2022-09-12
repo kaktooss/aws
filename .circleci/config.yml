@@ -24,8 +24,8 @@ jobs:
             
             echo $PASS | buildah login -u $USER --password-stdin docker.io
             
-            buildah bud -t kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
-            buildah push kaktooss/aws:${VERSION}
+            buildah bud -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
+            buildah push docker.io/kaktooss/aws:${VERSION}
 
 workflows:
   version: 2
