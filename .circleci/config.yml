@@ -14,7 +14,7 @@ jobs:
   build:
     environment:
       STORAGE_DRIVER: vfs
-      BUILDAH_ISOLATION: "rootless"
+      BUILDAH_ISOLATION: chroot
     docker:
       - image: quay.io/buildah/stable
     resource_class: dct-local/dct-local
