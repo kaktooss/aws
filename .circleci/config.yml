@@ -22,7 +22,7 @@ jobs:
           command: |
             export VERSION=`date +%Y%m%d-%H%M%S -u`
             
-            echo $PASS | buildah login -u $USER --password-stdin
+            echo $PASS | buildah login -u $USER --password-stdin docker.io
             
             buildah bud -t kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
             buildah push kaktooss/aws:${VERSION}
