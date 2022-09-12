@@ -1,4 +1,5 @@
 version: 2
+
 jobs:
   checkout:
     resource_class: dct-local/dct-local
@@ -11,6 +12,9 @@ jobs:
           paths:
             - .
   build:
+    environment:
+      STORAGE_DRIVER: vfs
+      BUILDAH_ISOLATION: "rootless"
     docker:
       - image: quay.io/buildah/stable
     resource_class: dct-local/dct-local
