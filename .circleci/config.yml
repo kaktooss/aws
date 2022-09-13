@@ -36,8 +36,10 @@ jobs:
     resource_class: medium
     machine:
       - image: ubuntu-2204:2022.07.1
+    executor:
     steps:
-      - checkout
+      - attach_workspace:
+          at: .
       - run:
           name: Build Docker Image
           command: |
@@ -54,9 +56,9 @@ workflows:
 
   build-image:
     jobs:
+      - checkout
       - build-image-machine:
           context: dockerhub
-#      - checkout
 #
 #      - build:
 #          requires:
