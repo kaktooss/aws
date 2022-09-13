@@ -47,14 +47,15 @@ jobs:
             
             docker build -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
             docker push docker.io/kaktooss/aws:${VERSION}
-            
+
 
 workflows:
   version: 2
 
   build-image:
     jobs:
-      - build-image-machine
+      - build-image-machine:
+          context: dockerhub
 #      - checkout
 #
 #      - build:
