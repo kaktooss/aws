@@ -59,6 +59,8 @@ workflows:
       - checkout
       - build-image-machine:
           context: dockerhub
+          requires:
+            - checkout
 #
 #      - build:
 #          requires:
