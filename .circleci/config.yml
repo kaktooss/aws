@@ -16,7 +16,7 @@ jobs:
       STORAGE_DRIVER: vfs
       BUILDAH_ISOLATION: chroot
     docker:
-      - image: quay.io/buildah/stable
+      - image: quay.io/podman/stable
     resource_class: dct-local/dct-local
     steps:
       - attach_workspace:
@@ -26,10 +26,10 @@ jobs:
           command: |
             export VERSION=`date +%Y%m%d-%H%M%S -u`
             
-            echo $PASS | buildah login -u $USER --password-stdin docker.io
+            echo $PASS | podman login -u $USER --password-stdin docker.io
             
-            buildah bud -q --squash -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
-            buildah push -q docker.io/kaktooss/aws:${VERSION}
+            podman build -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
+            podman push docker.io/kaktooss/aws:${VERSION}
 
 workflows:
   version: 2
