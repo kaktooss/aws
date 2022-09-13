@@ -1,17 +1,23 @@
-version: 2
+version: 2.1
 
-machine: &machine
-  machine:
-    - image: ubuntu-2204:2022.07.1
-
-docker: &docker
-  docker:
-    - image: cimg/base:2022.09
+executors:
+  machine-base:
+    machine:
+      docker_layer_caching: true
+      image: ubuntu-2204:2022.07.1
+    resource_class: medium
+  docker-base:
+    resource_class: small
+    docker:
+      - image: cimg/base:2022.09
+  docker-dct:
+    resource_class: dct-local/dct-local
+    docker:
+      - image: cimg/base:2022.09
 
 jobs:
   checkout:
-    <<: *docker
-    resource_class: dct-local/dct-local
+    executor: docker-dct
     steps:
       - checkout
       - persist_to_workspace:
@@ -19,7 +25,7 @@ jobs:
           paths:
             - .
   build:
-    <<: *docker
+    executor: docker-base
     resource_class: small
     steps:
       - attach_workspace:
@@ -38,8 +44,7 @@ jobs:
 
 
   build-image-machine:
-    <<: *machine
-    resource_class: medium
+    executor: machine-base
     steps:
       - attach_workspace:
           at: .
