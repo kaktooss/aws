@@ -1,10 +1,17 @@
 version: 2
 
+machine: &machine
+  machine:
+    - image: ubuntu-2204:2022.07.1
+
+docker: &docker
+  docker:
+    - image: cimg/base:2022.09
+
 jobs:
   checkout:
+    <<: *docker
     resource_class: dct-local/dct-local
-    docker:
-      - image: cimg/base:2022.09
     steps:
       - checkout
       - persist_to_workspace:
@@ -12,31 +19,11 @@ jobs:
           paths:
             - .
   build:
+    <<: *docker
     environment:
       STORAGE_DRIVER: vfs
       BUILDAH_ISOLATION: chroot
-    docker:
-      - image: quay.io/podman/stable
     resource_class: dct-local/dct-local
-    steps:
-      - attach_workspace:
-          at: .
-      - run:
-          name: Build Docker Image
-          command: |
-            export VERSION=`date +%Y%m%d-%H%M%S -u`
-            
-            echo $PASS | podman login -u $USER --password-stdin docker.io
-            
-            podman build -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
-            podman push docker.io/kaktooss/aws:${VERSION}
-
-
-  build-image-machine:
-    resource_class: medium
-    machine:
-      - image: ubuntu-2204:2022.07.1
-    executor:
     steps:
       - attach_workspace:
           at: .
@@ -48,7 +35,24 @@ jobs:
             echo $PASS | docker login -u $USER --password-stdin docker.io
             
             docker build -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
-            docker push docker.io/kaktooss/aws:${VERSION}
+            #docker push docker.io/kaktooss/aws:${VERSION}
+
+
+  build-image-machine:
+    <<: *machine
+    resource_class: medium
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Docker Image
+          command: |
+            export VERSION=`date +%Y%m%d-%H%M%S -u`
+            
+            echo $PASS | docker login -u $USER --password-stdin docker.io
+            
+            docker build -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
+            #docker push docker.io/kaktooss/aws:${VERSION}
 
 
 workflows:
@@ -61,12 +65,11 @@ workflows:
           context: dockerhub
           requires:
             - checkout
-#
-#      - build:
-#          requires:
-#            - checkout
-#          context: dockerhub
-#          filters:
-#            branches:
-#              only:
-#                - master
+      - build:
+          requires:
+            - checkout
+          context: dockerhub
+          filters:
+            branches:
+              only:
+                - master
