@@ -31,17 +31,37 @@ jobs:
             podman build -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
             podman push docker.io/kaktooss/aws:${VERSION}
 
+
+  build-image-machine:
+    resource_class: medium
+    machine:
+      - image: ubuntu-2204:2022.07.1
+    steps:
+      - checkout
+      - run:
+          name: Build Docker Image
+          command: |
+            export VERSION=`date +%Y%m%d-%H%M%S -u`
+            
+            echo $PASS | docker login -u $USER --password-stdin docker.io
+            
+            docker build -t docker.io/kaktooss/aws:${VERSION} -f ubuntu-aws.dockerfile .
+            docker push docker.io/kaktooss/aws:${VERSION}
+            
+
 workflows:
   version: 2
 
   build-image:
     jobs:
-      - checkout
-      - build:
-          requires:
-            - checkout
-          context: dockerhub
-          filters:
-            branches:
-              only:
-                - master
+      - build-image-machine
+#      - checkout
+#
+#      - build:
+#          requires:
+#            - checkout
+#          context: dockerhub
+#          filters:
+#            branches:
+#              only:
+#                - master
